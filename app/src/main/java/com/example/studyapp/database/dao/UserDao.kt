@@ -1,9 +1,8 @@
 package com.example.studyapp.database.dao
 
-import androidx.room.Dao
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.example.studyapp.database.entity.UserEntity
+
 
 @Dao
 interface UserDao{
@@ -12,6 +11,12 @@ interface UserDao{
 
     @Insert
     fun insertAll(vararg users: UserEntity)
+
+    @Update
+    fun updateUser(vararg users: UserEntity)
+
+    @Delete
+    fun delete(model: UserEntity?)
 
 
 }

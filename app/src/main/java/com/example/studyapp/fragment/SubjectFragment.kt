@@ -12,6 +12,9 @@ import com.example.studyapp.AppDatabase
 import com.example.studyapp.adapter.SubjectListAdapter
 import com.example.studyapp.database.entity.UserEntity
 import com.example.studyapp.databinding.SubjectFragmentBinding
+import com.example.studyapp.dialog.DialogDeleteUser
+import com.example.studyapp.dialog.DialogEditUser
+import com.example.studyapp.dialog.DialogViewUser
 
 class SubjectFragment : Fragment() {
     lateinit var listAdapter: SubjectListAdapter
@@ -34,7 +37,10 @@ class SubjectFragment : Fragment() {
             loadData()
         }
         loadData()
+
+
     }
+
 
     private fun loadData() {
         loadDatabase()
@@ -79,7 +85,10 @@ class SubjectFragment : Fragment() {
         * show dialog fragment
         * voi UI la file dialog_delete_user.xml
         * */
-        Toast.makeText(context, "handleClickDelete", Toast.LENGTH_SHORT).show()
+        var dialog = DialogDeleteUser()
+        dialog.show(parentFragmentManager,"DialogDelete")
+
+
     }
 
     private fun handleClickEdit(userEntity: UserEntity) {
@@ -91,14 +100,33 @@ class SubjectFragment : Fragment() {
         * 1. show dialog fragment
         * 2. goi setResult fragment
         * */
-        Toast.makeText(context, "handleClickEdit", Toast.LENGTH_SHORT).show()
+
+        val bundle = Bundle()
+        bundle.putString("Ten", userEntity.ten)
+        bundle.putString("Tuoi", userEntity.tuoi.toString())
+        bundle.putString("NamSinh", userEntity.namSinh.toString())
+        parentFragmentManager.setFragmentResult("EditUser", bundle)
+
+
+
+        var dialog = DialogEditUser()
+        dialog.show(parentFragmentManager,"DialogEdit")
     }
 
     private fun handleClickView(userEntity: UserEntity) {
         /*show dialog fragment thong tin user
         * voi UI la file dialog_view_user.xml
         */
-        Toast.makeText(context, "handleClickView", Toast.LENGTH_SHORT).show()
+
+        val bundle = Bundle()
+        bundle.putString("Ten", userEntity.ten)
+        bundle.putString("Id", userEntity.id.toString())
+        bundle.putString("Tuoi", userEntity.tuoi.toString())
+        bundle.putString("NamSinh", userEntity.namSinh.toString())
+        parentFragmentManager.setFragmentResult("ClickView", bundle)
+
+        var dialog = DialogViewUser()
+        dialog.show(parentFragmentManager,"DialogView")
     }
 
 }

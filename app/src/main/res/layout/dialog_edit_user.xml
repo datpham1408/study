@@ -10,21 +10,25 @@
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="ten" />
+        android:hint="ten"
+        android:id="@+id/dl_etTen"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="tuoi" />
+        android:hint="tuoi"
+        android:id="@+id/dl_etTuoi"/>
 
     <EditText
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="nam sinh" />
+        android:hint="nam sinh"
+        android:id="@+id/dl_etNamSinh"/>
 
     <Button
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="Update"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:id="@+id/btUpdate"/>
 </androidx.appcompat.widget.LinearLayoutCompat>

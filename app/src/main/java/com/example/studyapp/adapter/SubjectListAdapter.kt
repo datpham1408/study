@@ -7,6 +7,8 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.studyapp.adapter.diff_callback.DiffcallBackSubject
 import com.example.studyapp.database.entity.UserEntity
 import com.example.studyapp.databinding.ItemSubjectBinding
+import com.example.studyapp.dialog.DialogDeleteUser
+
 
 class SubjectListAdapter(
     val onClickView: (UserEntity) -> Unit,
@@ -31,6 +33,7 @@ class SubjectListAdapter(
             }
             binding.btXoa.setOnClickListener {
                 onClickDelete(entity)
+
             }
 
 
