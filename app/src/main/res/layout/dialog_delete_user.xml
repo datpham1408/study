@@ -20,12 +20,14 @@
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Khong" />
+            android:text="Khong"
+            android:id="@+id/btNo"/>
 
         <Button
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="co" />
+            android:text="co"
+            android:id="@+id/btYes"/>
     </androidx.appcompat.widget.LinearLayoutCompat>
 
 </androidx.appcompat.widget.LinearLayoutCompat>

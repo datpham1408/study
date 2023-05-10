@@ -9,7 +9,7 @@ data class UserEntity(
     @ColumnInfo(name = "ten") val ten: String,
     @ColumnInfo(name = "tuoi") val tuoi: Int,
     @ColumnInfo(name = "nam_sinh") val namSinh: Int
-) {
+): java.io.Serializable {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
