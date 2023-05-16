@@ -1,51 +1,49 @@
-package com.example.studyapp.activity
+package com.example.studyapp.fragment
 
 import android.os.Bundle
-import android.widget.Toast
-import androidx.appcompat.app.AppCompatActivity
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
 import androidx.core.content.ContentProviderCompat.requireContext
+import androidx.fragment.app.Fragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.room.Room
-import com.example.studyapp.R
 import com.example.studyapp.adapter.diff_callback.TaskListAdapter
 import com.example.studyapp.database.AppDatabase
 import com.example.studyapp.database.entity.TaskEntity
-import com.example.studyapp.databinding.ActivityMainBinding
+import com.example.studyapp.databinding.SearchFragmentBinding
 import com.example.studyapp.dialog.DialogDeleteTask
 import com.example.studyapp.dialog.DialogEditTask
-import com.example.studyapp.dialog.TaskDialogFragment
-import com.example.studyapp.fragment.SearchFragment
 
-class MainActivity : AppCompatActivity() {
-    lateinit var binding: ActivityMainBinding
+class SearchFragment : Fragment() {
+    lateinit var binding: SearchFragmentBinding
     lateinit var listAdapter: TaskListAdapter
+    override fun onCreateView(
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        binding = SearchFragmentBinding.inflate(inflater, container, false)
 
-//    var modelEntity = TaskEntity("","")
+        return binding.root
+    }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        binding = ActivityMainBinding.inflate(layoutInflater)
-        setContentView(binding.root)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
         initAdapter()
         initRecyclerView()
-        supportFragmentManager.setFragmentResultListener("TaskDialog", this) { _, bundle ->
-            loadData()
-        }
-        loadData()
-
-
-
         initListener()
+    }
 
+    private fun initRecyclerView() {
+        binding.rcvSearch.layoutManager = LinearLayoutManager(requireContext())
+
+        binding.rcvSearch.adapter = listAdapter
     }
 
     private fun loadData() {
-        loadDatabase()
-    }
-
-    private fun loadDatabase() {
         val db = Room.databaseBuilder(
-            applicationContext,
+            requireContext(),
             AppDatabase::class.java, "database-name"
         ).allowMainThreadQueries().build()
 
@@ -54,34 +52,6 @@ class MainActivity : AppCompatActivity() {
 
         listAdapter.submitList(tasks)
 
-    }
-
-    private fun initListener() {
-        binding.btAdd.setOnClickListener {
-            var dialog = TaskDialogFragment()
-            dialog.show(supportFragmentManager, dialog::class.java.simpleName)
-        }
-
-        binding.btSearch.setOnClickListener {
-           addFragment()
-
-        }
-    }
-
-    private fun addFragment() {
-        supportFragmentManager.beginTransaction().apply {
-            var searchFragment = SearchFragment()
-            add(R.id.flSearch,searchFragment)
-            addToBackStack(searchFragment::class.java.simpleName)
-            commit()
-
-        }
-    }
-
-    private fun initRecyclerView() {
-        binding.flRcvTask.layoutManager = LinearLayoutManager(this)
-
-        binding.flRcvTask.adapter = listAdapter
     }
 
     private fun initAdapter() {
@@ -103,11 +73,11 @@ class MainActivity : AppCompatActivity() {
     private fun handleClickDelete(taskEntity: TaskEntity) {
 
         val bundle = Bundle()
-        supportFragmentManager.setFragmentResult("DeleteTask", bundle)
+        parentFragmentManager.setFragmentResult("DeleteTask", bundle)
         var dialog = DialogDeleteTask {
             deleteData(taskEntity)
         }
-        dialog.show(supportFragmentManager, "DialogDelete")
+        dialog.show(parentFragmentManager, "DialogDelete")
 
     }
 
@@ -117,17 +87,17 @@ class MainActivity : AppCompatActivity() {
         bundle.putString("title", taskEntity.title)
         bundle.putString("content", taskEntity.content)
 //        bundle.putSerializable("Entity",taskEntity)
-        supportFragmentManager.setFragmentResult("EditTask", bundle)
-        var dialog = DialogEditTask{
+        parentFragmentManager.setFragmentResult("EditTask", bundle)
+        var dialog = DialogEditTask {
             it.id = taskEntity.id
             updateData(it)
         }
-        dialog.show(supportFragmentManager, "DialogEdit")
+        dialog.show(parentFragmentManager, "DialogEdit")
     }
 
     private fun updateData(taskEntity: TaskEntity) {
         val db = Room.databaseBuilder(
-            applicationContext,
+            requireContext(),
             AppDatabase::class.java, "database-name"
         ).allowMainThreadQueries().build()
 
@@ -140,7 +110,7 @@ class MainActivity : AppCompatActivity() {
 
     private fun deleteData(taskEntity: TaskEntity) {
         val db = Room.databaseBuilder(
-            this,
+            requireContext(),
             AppDatabase::class.java, "database-name"
         ).allowMainThreadQueries().build()
 
@@ -152,4 +122,24 @@ class MainActivity : AppCompatActivity() {
     }
 
 
+    private fun initListener() {
+        binding.searchFrgBtSearch.setOnClickListener {
+            handleSearch()
+        }
+    }
+
+    private fun handleSearch() {
+        val keyWork = binding.searchFrgEtTitle.text.toString()
+
+        val db = Room.databaseBuilder(
+            requireContext(),
+            AppDatabase::class.java, "database-name"
+        ).allowMainThreadQueries().build()
+
+        val dao = db.taskDao()
+        var search = dao.findTaskWithName(keyWork)
+
+        listAdapter.submitList(search)
+    }
 }
+
