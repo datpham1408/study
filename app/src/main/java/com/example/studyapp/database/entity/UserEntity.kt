@@ -6,12 +6,12 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "user")
 data class UserEntity(
-    @ColumnInfo(name = "ten") val ten: String,
-    @ColumnInfo(name = "tuoi") val tuoi: Int,
-    @ColumnInfo(name = "nam_sinh") val namSinh: Int
-): java.io.Serializable {
+    @ColumnInfo(name = "email") var email: String,
+    @ColumnInfo(name = "password") var password: String,
+    @ColumnInfo(name = "xac nhan password") var xacNhanPassword: String,
+) {
 
     @PrimaryKey(autoGenerate = true)
     var id: Int = 0
-
 }
+

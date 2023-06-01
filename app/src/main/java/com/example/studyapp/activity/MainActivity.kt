@@ -1,90 +1,132 @@
 package com.example.studyapp.activity
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Patterns
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.room.Room
-import com.example.studyapp.AppDatabase
 import com.example.studyapp.R
-import com.example.studyapp.fragment.SubjectFragment
+import com.example.studyapp.database.AppDatabase
 import com.example.studyapp.database.entity.UserEntity
 import com.example.studyapp.databinding.ActivityMainBinding
+import com.example.studyapp.fragment.DangKiFragment
+import com.example.studyapp.fragment.HomeFragment
+import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
     lateinit var binding: ActivityMainBinding
-    var ten: String? = null
-    var tuoi = 0
-    var namSinh = 0
-    var result: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-//        setContentView(R.layout.activity_main)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+
         initListener()
-//        getData()
-        addFragment()
-//        roomDatabase()
+        checkRememberLogin()
+
     }
 
-//    val db = Room.databaseBuilder(
-//        applicationContext,
-//        AppDatabase::class.java, "database-name"
-//    ).allowMainThreadQueries().build()
-//
-//    val userDao = db.userDao()
-//    userDao.getAll()
-//}private fun roomDatabase() {
-
-
-//    private fun getData() {
-//        ten = binding.etTen.text.toString()
-//        tuoi = binding.etTuoi.text.toString().toInt()
-//        namSinh = binding.etNamSinh.text.toString().toInt()
-//
-//        result = "$ten-$tuoi-$namSinh"
-//    }
-
     private fun initListener() {
-        binding.btSubmit.setOnClickListener {
-            var bundle =Bundle()
-//            bundle.putString("Main",result)
-//            supportFragmentManager.setFragmentResult("Main",bundle)
-//
-//            addFragment()
-            saveData()
-            supportFragmentManager.setFragmentResult("Main",bundle)
+        binding.tvDangNhap.setOnClickListener {
+            login(
+                email = binding.etEmail.text.toString(),
+                password = binding.etPassword.text.toString()
+            )
+        }
+        binding.tvDangKy.setOnClickListener {
+            val dangKiFragment = DangKiFragment()
+            dangKiFragment.show(supportFragmentManager, "DangKiFragment")
         }
     }
 
-    private fun saveData() {
-        /*
-        * 1 - Tao room database
-        * 2 - dung room save user entiry xuong database
-        * */
+    private fun login(email: String, password: String) {
+        when {
+            email.isEmpty() -> {
+                Toast.makeText(this, "nhap email", Toast.LENGTH_SHORT).show()
+            }
+            password.isEmpty() -> {
+                Toast.makeText(this, "nhap password", Toast.LENGTH_SHORT).show()
+            }
+            password.length < 6 -> {
+                Toast.makeText(this, "password khong du ki tu", Toast.LENGTH_SHORT).show()
 
+            }
+            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
+                Toast.makeText(this, "email khong hop le", Toast.LENGTH_SHORT).show()
+            }
+
+            else -> {
+                handleTextUser()
+
+            }
+        }
+
+    }
+
+    private fun handleTextUser() {
+        var listUser: List<UserEntity>
         val db = Room.databaseBuilder(
             applicationContext,
             AppDatabase::class.java, "database-name"
         ).allowMainThreadQueries().build()
 
-        var dao = db.userDao()
-        //create user entity
-        var ten = binding.etTen.text.toString()
-        var tuoi = binding.etTuoi.text.toString().toInt()
-        var namSinh = binding.etNamSinh.text.toString().toInt()
-        val entity = UserEntity(ten, tuoi, namSinh)
-        dao.insertAll(entity)
+        val dao = db.userDao()
+        val email = binding.etEmail.text.toString()
+        val password = binding.etPassword.text.toString()
+
+        listUser = dao.findUserWithName(email, password)
+
+        if (listUser.isEmpty()) {
+            Toast.makeText(this, "user khong ton tai", Toast.LENGTH_SHORT).show()
+        } else {
+            rememberSaveLogin()
+            saveIdUser(listUser[0])
+            var bundle = Bundle()
+            var gson = Gson()
+            var data = gson.toJson(listUser[0])
+            bundle.putString("Main", data)
+            supportFragmentManager.setFragmentResult("Main", bundle)
+
+            supportFragmentManager.beginTransaction().apply {
+                val homeFragment = HomeFragment()
+                add(R.id.flLogin, homeFragment)
+                commit()
+            }
+        }
+
+
     }
 
-    private fun addFragment() {
-        supportFragmentManager.beginTransaction().apply {
-            var subjectFragment = SubjectFragment()
-            add(R.id.act_flRCV, subjectFragment)
-            commit()
+    fun rememberSaveLogin() {
+        val sharedPreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        val editor = sharedPreferences.edit()
+        editor.putBoolean("Login", true)
+        editor.apply()
+    }
+
+    fun checkRememberLogin() {
+        val sharedPreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        val value = sharedPreferences.getBoolean("Login", false)
+
+        if (value == true) {
+            supportFragmentManager.beginTransaction().apply {
+                val homeFragment = HomeFragment()
+                add(R.id.flLogin, homeFragment)
+                commit()
+
+            }
         }
     }
 
+    fun saveIdUser(idUser: UserEntity) {
+        val sharedPreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        val save = sharedPreferences.edit()
+        save.putInt("idUser", idUser.id)
+        save.apply()
+
+
+    }
 
 }
