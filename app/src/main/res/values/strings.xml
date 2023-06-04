@@ -1,3 +1,8 @@
 <resources>
     <string name="app_name">Study App</string>
+    <string name="tab1_title">Home Fragment</string>
+    <string name="tab2_title">Danh Ba</string>
+    <string name="tab3_title">Kham Pha</string>
+    <string name="tab4_title">Nhat Ky</string>
+    <string name="tab5_title">Ca Nhan</string>
 </resources>

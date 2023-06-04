@@ -1,17 +1,27 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.studyapp.activity
 
 import android.content.Context
 import android.os.Bundle
 import android.util.Patterns
+import android.view.LayoutInflater
+import android.widget.ImageView
+import android.widget.TextView
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.room.Room
 import com.example.studyapp.R
+import com.example.studyapp.adapter.diff_callback.MyPagerAdapter
+
 import com.example.studyapp.database.AppDatabase
 import com.example.studyapp.database.entity.UserEntity
 import com.example.studyapp.databinding.ActivityMainBinding
-import com.example.studyapp.fragment.DangKiFragment
-import com.example.studyapp.fragment.HomeFragment
+import com.example.studyapp.fragment.*
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 
 class MainActivity : AppCompatActivity() {
@@ -22,111 +32,56 @@ class MainActivity : AppCompatActivity() {
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
-
         initListener()
-        checkRememberLogin()
+
 
     }
 
     private fun initListener() {
-        binding.tvDangNhap.setOnClickListener {
-            login(
-                email = binding.etEmail.text.toString(),
-                password = binding.etPassword.text.toString()
-            )
-        }
-        binding.tvDangKy.setOnClickListener {
-            val dangKiFragment = DangKiFragment()
-            dangKiFragment.show(supportFragmentManager, "DangKiFragment")
-        }
-    }
 
-    private fun login(email: String, password: String) {
-        when {
-            email.isEmpty() -> {
-                Toast.makeText(this, "nhap email", Toast.LENGTH_SHORT).show()
+
+        binding.viewPager2.adapter = MyPagerAdapter(supportFragmentManager, lifecycle)
+
+
+        val tabLayoutMediator =
+            TabLayoutMediator(binding.tabLayout, binding.viewPager2) { tab, position ->
+                val customTabItem = LayoutInflater.from(this)
+                    .inflate(R.layout.item_tab, null) as LinearLayoutCompat
+
+                val textView = customTabItem.findViewById<TextView>(R.id.itemTab_tvTitle)
+                val imageView = customTabItem.findViewById<ImageView>(R.id.itemTab_ivTab)
+
+                val textViews = arrayListOf(
+                    R.string.tab1_title,
+                    R.string.tab2_title,
+                    R.string.tab3_title,
+                    R.string.tab4_title,
+                    R.string.tab5_title
+                )
+                val imageViews = intArrayOf(
+                    R.drawable.messenger,
+                    R.drawable.ic_danhba,
+                    R.drawable.ic_khampha,
+                    R.drawable.ic_nhatky,
+                    R.drawable.ic_canhan
+                )
+
+
+                textView.text = getStrings(textViews[position])
+                imageView.setImageResource(imageViews[position])
+                tab.customView = customTabItem
+
+
             }
-            password.isEmpty() -> {
-                Toast.makeText(this, "nhap password", Toast.LENGTH_SHORT).show()
-            }
-            password.length < 6 -> {
-                Toast.makeText(this, "password khong du ki tu", Toast.LENGTH_SHORT).show()
 
-            }
-            !Patterns.EMAIL_ADDRESS.matcher(email).matches() -> {
-                Toast.makeText(this, "email khong hop le", Toast.LENGTH_SHORT).show()
-            }
-
-            else -> {
-                handleTextUser()
-
-            }
-        }
-
-    }
-
-    private fun handleTextUser() {
-        var listUser: List<UserEntity>
-        val db = Room.databaseBuilder(
-            applicationContext,
-            AppDatabase::class.java, "database-name"
-        ).allowMainThreadQueries().build()
-
-        val dao = db.userDao()
-        val email = binding.etEmail.text.toString()
-        val password = binding.etPassword.text.toString()
-
-        listUser = dao.findUserWithName(email, password)
-
-        if (listUser.isEmpty()) {
-            Toast.makeText(this, "user khong ton tai", Toast.LENGTH_SHORT).show()
-        } else {
-            rememberSaveLogin()
-            saveIdUser(listUser[0])
-            var bundle = Bundle()
-            var gson = Gson()
-            var data = gson.toJson(listUser[0])
-            bundle.putString("Main", data)
-            supportFragmentManager.setFragmentResult("Main", bundle)
-
-            supportFragmentManager.beginTransaction().apply {
-                val homeFragment = HomeFragment()
-                add(R.id.flLogin, homeFragment)
-                commit()
-            }
-        }
-
+        tabLayoutMediator.attach()
 
     }
 
-    fun rememberSaveLogin() {
-        val sharedPreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE)
-        val editor = sharedPreferences.edit()
-        editor.putBoolean("Login", true)
-        editor.apply()
+
+    fun getStrings(id: Int): String {
+        return this.resources.getString(id)
     }
 
-    fun checkRememberLogin() {
-        val sharedPreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE)
-        val value = sharedPreferences.getBoolean("Login", false)
-
-        if (value == true) {
-            supportFragmentManager.beginTransaction().apply {
-                val homeFragment = HomeFragment()
-                add(R.id.flLogin, homeFragment)
-                commit()
-
-            }
-        }
-    }
-
-    fun saveIdUser(idUser: UserEntity) {
-        val sharedPreferences = getSharedPreferences("myPref", Context.MODE_PRIVATE)
-        val save = sharedPreferences.edit()
-        save.putInt("idUser", idUser.id)
-        save.apply()
-
-
-    }
 
 }
