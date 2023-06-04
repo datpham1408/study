@@ -1,6 +1,7 @@
+@file:Suppress("DEPRECATION")
+
 package com.example.studyapp.fragment
 
-import android.R
 import android.content.Context
 import android.os.Bundle
 import android.text.Editable
@@ -8,16 +9,26 @@ import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ImageView
+import android.widget.TextView
+import androidx.appcompat.widget.LinearLayoutCompat
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentPagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.room.Room
 import com.example.studyapp.Model.MessageModel
+import com.example.studyapp.R
 import com.example.studyapp.adapter.diff_callback.MessageListAdapter
+
 import com.example.studyapp.database.AppDatabase
 import com.example.studyapp.database.entity.FriendEntity
 import com.example.studyapp.database.entity.UserEntity
 import com.example.studyapp.databinding.HomeFragmentBinding
+import com.google.android.material.bottomnavigation.BottomNavigationView
+import com.google.android.material.tabs.TabItem
+import com.google.android.material.tabs.TabLayout
+import com.google.android.material.tabs.TabLayoutMediator
 import com.google.gson.Gson
 
 
@@ -58,7 +69,6 @@ class HomeFragment : Fragment() {
     }
 
 
-
     private fun getData(bundle: Bundle) {
         bundle.let {
             var dataArg = it.getString("Main", "")
@@ -94,6 +104,7 @@ class HomeFragment : Fragment() {
         binding.rcvMessage.layoutManager = LinearLayoutManager(requireContext())
 
         binding.rcvMessage.adapter = listAdapter
+
 
     }
 
@@ -140,9 +151,8 @@ class HomeFragment : Fragment() {
 
             }
         )
+
     }
-
-
 
 
     fun getListFriend(userEntity: UserEntity) {
@@ -165,7 +175,8 @@ class HomeFragment : Fragment() {
 
 
     }
-    fun getListFriendWithIdUser(idUser : Int) {
+
+    fun getListFriendWithIdUser(idUser: Int) {
         if (listFriend.isNotEmpty()) {
             listFriend.clear()
         }
@@ -223,12 +234,17 @@ class HomeFragment : Fragment() {
         })
     }
 
-    fun getIdUser():Int {
-        val sharedPreferences = requireActivity().getSharedPreferences("myPref",Context.MODE_PRIVATE)
-        val data = sharedPreferences.getInt("idUser",id)
+    fun getIdUser(): Int {
+        val sharedPreferences =
+            requireActivity().getSharedPreferences("myPref", Context.MODE_PRIVATE)
+        val data = sharedPreferences.getInt("idUser", id)
 
         return data
 
+    }
+
+    fun getStrings(id: Int): String {
+        return requireActivity().resources.getString(id)
     }
 
 }
