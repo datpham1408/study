@@ -24,35 +24,39 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:orientation="vertical">
+            android:orientation="horizontal">
 
-
-            <LinearLayout
+            <TextView
+                android:id="@+id/tvPhoneNumber"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal">
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingVertical="16dp"
+                android:text="VOI SO DIEN THOAI"
+                android:textSize="17dp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingVertical="16dp"
-                    android:text="VOI SO DIEN THOAI"
-                    android:textSize="17dp"
-                    android:textStyle="bold" />
+            <TextView
+                android:id="@+id/tvEmail"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:gravity="center"
+                android:paddingVertical="16dp"
+                android:text="VOI MA EMAIL"
+                android:textSize="17dp"
+                android:textStyle="bold" />
 
-                <TextView
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:paddingVertical="16dp"
-                    android:text="VOI MA EMAIL"
-                    android:textSize="17dp"
-                    android:textStyle="bold" />
+        </LinearLayout>
 
-            </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/llLoginEmail"
+            android:visibility="gone"
+            android:orientation="vertical">
+
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -91,9 +95,9 @@
             <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
                 android:layout_marginHorizontal="20dp"
-                android:layout_marginTop="20dp">
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
 
                 <ImageView
                     android:layout_width="32dp"
@@ -112,18 +116,104 @@
                     android:padding="8dp" />
 
             </LinearLayout>
+
             <View
                 android:layout_width="match_parent"
                 android:layout_height="1dp"
-                android:background="@color/grey"
-                android:layout_marginTop="4dp"
                 android:layout_marginHorizontal="20dp"
-                />
+                android:layout_marginTop="4dp"
+                android:background="@color/grey" />
 
         </LinearLayout>
 
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/llLoginPhoneNumber"
+           >
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/mail" />
+
+
+                <EditText
+                    android:id="@+id/etPhone"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:background="@null"
+
+                    android:hint="Phone"
+                    android:inputType="number"
+                    android:padding="8dp" />
+
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginVertical="4dp"
+                android:background="@color/grey" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
+                <ImageView
+                    android:layout_width="32dp"
+                    android:layout_height="32dp"
+                    android:layout_gravity="center"
+                    android:src="@drawable/lock" />
+
+                <EditText
+                    android:id="@+id/etOTP"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="20dp"
+                    android:background="@null"
+                    android:hint="OTP"
+                    android:inputType="number"
+                    android:padding="8dp" />
+
+            </LinearLayout>
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_marginHorizontal="20dp"
+                android:layout_marginTop="4dp"
+                android:background="@color/grey" />
+
+
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:visibility="gone"
+            android:id="@+id/llBtEamil">
+
+
+
         <TextView
+            android:id="@+id/tvDangNhap"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
@@ -133,10 +223,10 @@
             android:padding="16dp"
             android:text="Dang nhap voi mat khau"
             android:textColor="@color/white"
-            android:textSize="15dp"
-            android:id="@+id/tvDangNhap"/>
+            android:textSize="15dp" />
 
         <TextView
+            android:id="@+id/tvDangKy"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginHorizontal="20dp"
@@ -146,8 +236,45 @@
             android:padding="16dp"
             android:text="Dang ky moi"
             android:textColor="@color/blue"
-            android:textSize="15dp"
-            android:id="@+id/tvDangKy"/>
+            android:textSize="15dp" />
+
+        </LinearLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:id="@+id/llBtPhoneNumber"
+            >
+
+
+
+        <TextView
+            android:id="@+id/tvGuiOTP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginTop="30dp"
+            android:background="@drawable/shape_login"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="Gui OTP"
+            android:textColor="@color/white"
+            android:textSize="15dp" />
+
+        <TextView
+            android:id="@+id/tvDangNhapBangOTP"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginHorizontal="20dp"
+            android:layout_marginVertical="10dp"
+            android:background="@drawable/shape_login1"
+            android:gravity="center"
+            android:padding="16dp"
+            android:text="Dang nhap voi OTP"
+            android:textColor="@color/blue"
+            android:textSize="15dp" />
+
+        </LinearLayout>
 
         <TextView
             android:id="@+id/tvRememberPassword"

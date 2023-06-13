@@ -4,6 +4,7 @@ import androidx.room.ColumnInfo
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import com.example.studyapp.Model.MessageModel
+import com.example.studyapp.Model.UserDanhBa
 
 
 @Entity(tableName = "friend")
@@ -18,5 +19,9 @@ data class FriendEntity(
     fun convertToModel():MessageModel{
 
         return MessageModel(userName = userName, nickName = nickName)
+    }
+    fun convertToUserDanhBaModel(): UserDanhBa {
+        return UserDanhBa(image = 0 , name = userName)
+
     }
 }

@@ -12,6 +12,7 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.appcompat.widget.LinearLayoutCompat
+import androidx.core.content.ContentProviderCompat.requireContext
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentPagerAdapter
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -36,8 +37,9 @@ class HomeFragment : Fragment() {
     lateinit var binding: HomeFragmentBinding
     lateinit var recyclerView: RecyclerView
     lateinit var listAdapter: MessageListAdapter
-    lateinit var userEntity: UserEntity
+//    lateinit var userEntity: UserEntity
     var listFriend = arrayListOf<FriendEntity>()
+     var userId = 0
 
 
     override fun onCreateView(
@@ -53,10 +55,10 @@ class HomeFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        parentFragmentManager.setFragmentResultListener("Main", this) { _, bundle ->
-            getData(bundle)
-
-        }
+//        parentFragmentManager.setFragmentResultListener("Main", this) { _, bundle ->
+//            getData(bundle)
+//
+//        }
 
 
         initAdapter()
@@ -66,18 +68,19 @@ class HomeFragment : Fragment() {
         getListFriendWithIdUser(getIdUser())
 
 
-    }
-
-
-    private fun getData(bundle: Bundle) {
-        bundle.let {
-            var dataArg = it.getString("Main", "")
-            userEntity = Gson().fromJson(dataArg, UserEntity::class.java)
-            getListFriend(userEntity)
-
-        }
 
     }
+
+
+//    private fun getData(bundle: Bundle) {
+//        bundle.let {
+//            var dataArg = it.getString("Main", "")
+//            userEntity = Gson().fromJson(dataArg, UserEntity::class.java)
+//            getListFriend(userEntity)
+//
+//        }
+//
+//    }
 
     private fun initListener() {
         binding.btAdd.setOnClickListener {
@@ -93,9 +96,9 @@ class HomeFragment : Fragment() {
 
         var dao = dataBase().friendDao()
         val friendEntity =
-            FriendEntity(userName = userName, nickName = nickName, idUser = userEntity.id)
+            FriendEntity(userName = userName, nickName = nickName, idUser = getIdUser())
         dao.insertFriendAll(friendEntity)
-        getListFriend(userEntity)
+        getListFriend()
 
     }
 
@@ -120,7 +123,7 @@ class HomeFragment : Fragment() {
                         val dao = dataBase().friendDao()
 
                         dao.deleteFriend(listFriend[index])
-                        getListFriend(userEntity)
+                        getListFriend()
                     },
                     callbackUpdate = { userName, nickName ->
 
@@ -135,7 +138,7 @@ class HomeFragment : Fragment() {
 
                         dao.updateFriend(friends = friends)
 
-                        getListFriend(userEntity)
+                        getListFriend()
 
 
                     }
@@ -155,14 +158,14 @@ class HomeFragment : Fragment() {
     }
 
 
-    fun getListFriend(userEntity: UserEntity) {
+    fun getListFriend() {
         if (listFriend.isNotEmpty()) {
             listFriend.clear()
         }
 
 
         val dao = dataBase().friendDao()
-        listFriend.addAll(dao.getAllFriend(idUser = userEntity.id))
+        listFriend.addAll(dao.getAllFriend(idUser = getIdUser()))
         var array = arrayListOf<MessageModel>()
 
         for (i in listFriend.indices) {
