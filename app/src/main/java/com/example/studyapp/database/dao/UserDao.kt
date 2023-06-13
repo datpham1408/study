@@ -21,6 +21,16 @@ interface UserDao {
     @Delete
     fun delete(model: UserEntity?)
 
+    @Query("SELECT * FROM user WHERE id LIKE :id")
+    fun findUserById(id: Int): UserEntity
+
+
+    @Query("SELECT * FROM user WHERE uid LIKE :uid")
+    fun findUserByUId(uid: String?): UserEntity?
+
+    @Query("SELECT * FROM user WHERE email LIKE :email")
+    fun forgotPassword(email: String) :List<UserEntity>
+
 
     @Query("SELECT * FROM user WHERE email LIKE :email AND password LIKE:password")
     fun findUserWithName(email: String, password: String): List<UserEntity>
